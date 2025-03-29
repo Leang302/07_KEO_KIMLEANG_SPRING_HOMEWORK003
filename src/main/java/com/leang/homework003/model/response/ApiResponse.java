@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +17,9 @@ import org.springframework.http.HttpStatus;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
     private String message;
-    private HttpStatus httpStatus;
     private T payload;
+    private HttpStatus httpStatus;
+    @Builder.Default
+    private Instant time = Instant.now();
 
 }

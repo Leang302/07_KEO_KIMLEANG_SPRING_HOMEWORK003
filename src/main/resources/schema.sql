@@ -2,7 +2,7 @@ create table if not exists venues
 (
     venue_id   serial primary key,
     venue_name varchar(50) not null,
-    location   varchar(50) not null
+    location   varchar(255) not null
 );
 create table if not exists attendees
 (

@@ -14,6 +14,6 @@ public class VenueRequest {
     @Size(max = 50)
     private String venueName;
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 255)
     private String location;
 }
