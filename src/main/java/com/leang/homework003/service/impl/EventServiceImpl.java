@@ -1,7 +1,6 @@
 package com.leang.homework003.service.impl;
 
 import com.leang.homework003.exception.NotFoundException;
-import com.leang.homework003.model.entity.Attendee;
 import com.leang.homework003.model.entity.Event;
 import com.leang.homework003.model.request.EventRequest;
 import com.leang.homework003.repository.EventAttendeeRepository;
