@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VenueRequest {
+public class VenueRequest  {
     @NotBlank
     @Size(max = 50)
     private String venueName;

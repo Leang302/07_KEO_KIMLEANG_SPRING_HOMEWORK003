@@ -1,8 +1,9 @@
 package com.leang.homework003.exception;
 
-import org.springframework.context.annotation.Configuration;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,12 +22,14 @@ public class GlobalExceptionHandler {
         problemDetail.setProperty("timestamp", LocalDateTime.now());
         return problemDetail;
     }
+
+
     // Handle validation errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problemDetail.setTitle("Validation Failed");
-
+        problemDetail.setProperty("timestamp", LocalDateTime.now());
         // Collect field validation errors
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
@@ -62,4 +65,32 @@ public class GlobalExceptionHandler {
 
         return problemDetail;
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ProblemDetail handleDeserializationErrors(HttpMessageNotReadableException ex) {
+        // extract the invalid fields
+        String fieldName = extractFieldNameFromException(ex);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Validation Failed");
+        problemDetail.setProperty("timestamp", LocalDateTime.now());
+        problemDetail.setProperty("error", fieldName+" has an invalid format");
+
+
+        return problemDetail;
+    }
+
+
+    private String extractFieldNameFromException(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getCause();
+        if (cause instanceof JsonMappingException) {
+            JsonMappingException jsonMappingException = (JsonMappingException) cause;
+            return jsonMappingException.getPath().stream()
+                    .map(JsonMappingException.Reference::getFieldName)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
+    }
+
 }
